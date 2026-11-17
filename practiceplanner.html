@@ -42,6 +42,7 @@ nav.side .brand{margin:0 0 14px}
 nav.side select{width:100%;background:var(--card);border:1px solid var(--line);padding:7px 8px}
 .nav{display:block;width:100%;text-align:left;background:transparent;border:1px solid transparent;border-left:3px solid transparent;padding:8px 10px}
 .nav:hover{background:var(--card);border-left-color:var(--muted)}
+a.nav{text-decoration:none;color:inherit;box-sizing:border-box}
 .nav.primary{background:var(--accent);color:var(--on-accent);font-weight:700;margin-top:8px}
 .nav.primary:hover{filter:brightness(1.1);border-left-color:transparent}
 .navfoot{margin-top:auto;font-size:11.5px;color:var(--muted);padding-top:16px}
@@ -201,21 +202,22 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
 <div class="app">
   <nav class="side" id="sideNav" aria-label="Meny">
     <div class="brand">PracticePlanner<small>Handbollssviten</small></div>
+    <a class="nav" id="navHome" href="https://trenchrox.github.io/handbollssviten/">⌂ Hem</a>
     <button class="nav view" id="goOver" aria-current="page">Översikt</button>
     <button class="nav view" id="goPlan">Planera pass</button>
     <label class="navlbl" for="sessSel">Pass</label>
     <select id="sessSel"></select>
     <button class="nav primary" id="newSess">Nytt pass</button>
+    <button class="nav" id="exportBtn" title="Spara all data som en fil">⬇ Exportera backup</button>
     <button class="nav" id="moreBtn" aria-expanded="false" aria-controls="sideNav">Mer ▾</button>
     <button class="nav more" id="newEx">Ny övning</button>
     <div class="navlbl">Grupper och filer</div>
     <button class="nav more" id="impGroups">Importera grupper</button>
-    <button class="nav more" id="exportBtn">Exportera</button>
     <button class="nav more" id="importBtn">Importera</button>
     <button class="nav more" id="printBtn">Skriv ut passet</button>
     <input type="file" id="fileIn" accept="application/json" hidden>
     <button class="nav more" id="themeBtn"><span id="themeIc">☾</span> <span id="themeLb">Mörkt läge</span></button>
-    <div class="navfoot">Sparas i den här webbläsaren. Exportera för att flytta till en annan dator.<br><span id="appVersion"></span></div>
+    <div class="navfoot">Sparas i den här webbläsaren. Exportera backup för att spara eller flytta till en annan dator.<br><span id="appVersion"></span></div>
   </nav>
   <section class="over" id="overView" aria-label="Översikt"></section>
   <div class="main" id="planView" hidden>
@@ -253,7 +255,7 @@ const GROUPS = {
   BAS:{n:"Bas",c:"#98989f"}, EG:{n:"Egna övningar",c:"#ff9f0a"}
 };
 const CHIPS = [["Alla",null],["FP",["FP"]],["SK",["SK"]],["HA",["HA"]],["FS",["FS"]],["OF",["OF"]],["LK",["LK"]],["Målvakt",["RE","PO","ST","UK","SF"]],["Bas",["BAS"]],["Egna",["EG"]]];
-const APP_VERSION = '1.0';
+const APP_VERSION = '1.1';
 const KEY = "handbollssviten.practiceplanner.v1", OLDKEY = "handbollssviten.passplaneraren.v1";
 const PPM = 8, SNAP = 5;
 const $ = s => document.querySelector(s);
