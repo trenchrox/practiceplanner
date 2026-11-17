@@ -19,6 +19,8 @@ Det gemensamma för sviten (jämförelse av apparna, förslaget om gemensam prof
 |---|---|
 | `practiceplanner.html` | Hela appen (~170 kB). Typsnitten är base64-inbäddade i `@font-face`. |
 | `index.html` | Liten omdirigering till `practiceplanner.html`, så att rotadressen öppnar appen i stället för att ge 404. Ingen app-kod, ingen version att höja. |
+| `docs/manual.html` | Manualen (källan), med skärmbilderna inbäddade. Ändras ett arbetsflöde eller en knappetikett ska manualen följa med. |
+| `docs/make_manual_pdf.cjs` | Bygger `docs/practiceplanner-manual.pdf` ur manualen (`node docs/make_manual_pdf.cjs`). Webbsidan och PDF:en kopieras till `trenchrox/handbollssviten` (`manualer/`). |
 | `.nojekyll` | Tom fil som stänger av Jekyll på Pages. |
 | `suite-schema.md` | Sviteövergripande ID- och dataformat, version 1. Kopia, ska hållas lika i alla repon. |
 | `CLAUDE.md` | Den här filen. |
