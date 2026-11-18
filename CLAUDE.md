@@ -18,6 +18,7 @@ Det gemensamma för sviten (jämförelse av apparna, förslaget om gemensam prof
 | Fil | Innehåll |
 |---|---|
 | `practiceplanner.html` | Hela appen (~170 kB). Typsnitten är base64-inbäddade i `@font-face`. |
+| `index.html` | Bara en omdirigering till `practiceplanner.html`, så att `…/practiceplanner/` fungerar. Ingen app-kod. Det enda undantaget från regeln om en enda HTML-fil. |
 | `suite-schema.md` | Sviteövergripande ID- och dataformat, version 1. Kopia, ska hållas lika i alla repon. |
 | `CLAUDE.md` | Den här filen. |
 

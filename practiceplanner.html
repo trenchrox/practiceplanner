@@ -51,17 +51,19 @@ nav.side select{width:100%;background:var(--card);border:1px solid var(--line);p
 .over .lead{color:var(--muted);margin:4px 0 22px;max-width:70ch}
 .ohead{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .ohead select{background:var(--card);border:1px solid var(--line);padding:7px 10px}
-.stats{display:flex;gap:10px;margin:18px 0 22px;flex-wrap:wrap}
+.stats{display:flex;gap:12px;margin:18px 0 26px;flex-wrap:wrap}
 .stat{background:var(--card);padding:12px 16px;min-width:150px;border-top:3px solid var(--c,var(--line))}
 .stat b{display:block;font:700 34px 'Big Shoulders','Instrument Sans',sans-serif}
 .stat span{color:var(--muted);font-size:12.5px}
-.week{display:grid;grid-template-columns:92px 1fr;gap:10px;padding:10px 0;border-top:1px solid var(--line)}
+.week{display:grid;grid-template-columns:96px 1fr;gap:14px;padding:16px 0;border-top:1px solid var(--line)}
 .week .wk{font-weight:700}.week .wk small{display:block;color:var(--muted);font-weight:400;font-size:12px}
 .week.now .wk{color:var(--accent)}
-.days{display:flex;gap:8px;flex-wrap:wrap}
-.day{background:var(--card);border-left:4px solid var(--st);padding:8px 12px;min-width:200px;text-align:left;border-top:0;border-right:0;border-bottom:0}
+.days{display:flex;gap:12px;flex-wrap:wrap}
+.days.cols{display:grid;grid-template-columns:repeat(var(--n,3),minmax(0,1fr));gap:12px;align-items:stretch}
+.days.cols .day{grid-column:var(--col);min-width:0;width:100%}
+.day{background:var(--card);border-left:4px solid var(--st);padding:10px 14px;min-width:200px;min-height:64px;text-align:left;border-top:0;border-right:0;border-bottom:0}
 .day:hover{background:var(--card2)}
-.day .d1{font-weight:700}.day .d2{font-size:12px;color:var(--muted)}
+.day .d1{font-weight:700}.day .d2{font-size:12px;color:var(--muted);margin-top:2px}.day .d3{font-size:12px;color:var(--muted)}
 .day.past{opacity:.55}
 .day.big{min-width:260px;padding:14px 16px}.day.big .d1{font:700 22px 'Big Shoulders','Instrument Sans',sans-serif}
 .next{margin-bottom:6px}
@@ -194,6 +196,7 @@ dialog::backdrop{background:rgba(0,0,0,.7)}
   .ex{grid-template-columns:4px 1fr auto}
   .ex .body{padding:10px 12px}
 }
+@media (max-width:640px){.week{grid-template-columns:1fr}.days.cols{grid-template-columns:1fr}.days.cols .day{grid-column:auto}}
 @media (prefers-reduced-motion:reduce){aside.bank{transition:none}}
 </style>
 </head>
@@ -253,7 +256,7 @@ const GROUPS = {
   BAS:{n:"Bas",c:"#98989f"}, EG:{n:"Egna övningar",c:"#ff9f0a"}
 };
 const CHIPS = [["Alla",null],["FP",["FP"]],["SK",["SK"]],["HA",["HA"]],["FS",["FS"]],["OF",["OF"]],["LK",["LK"]],["Målvakt",["RE","PO","ST","UK","SF"]],["Bas",["BAS"]],["Egna",["EG"]]];
-const APP_VERSION = '1.0';
+const APP_VERSION = '1.1';
 const KEY = "handbollssviten.practiceplanner.v1", OLDKEY = "handbollssviten.passplaneraren.v1";
 const PPM = 8, SNAP = 5;
 const $ = s => document.querySelector(s);
@@ -723,11 +726,12 @@ function renderOverview(){
   const curWeek = isoWeek(pd(today));
   for(const w of weeks){
     const f = w.items[0].dt, now = w.items.some(o => isoWeek(pd(o.date)) === curWeek && o.dt.getUTCFullYear() === new Date().getFullYear());
-    html += `<div class="week ${now ? "now" : ""}"><div class="wk">Vecka ${w.week}<small>${f.getUTCDate()} ${MON[f.getUTCMonth()]}</small></div><div class="days">` +
-      w.items.map(o => { const s = sessFor(o), st = status(s);
-        return `<button class="day ${o.date < today ? "past" : ""}" style="--st:${st.c}" data-date="${o.date}" data-day="${o.day.id}">
+    html += `<div class="week ${now ? "now" : ""}"><div class="wk">Vecka ${w.week}<small>${f.getUTCDate()} ${MON[f.getUTCMonth()]}</small></div><div class="days cols" style="--n:${se.days.length}">` +
+      w.items.map(o => { const s = sessFor(o), st = status(s), col = Math.max(0, se.days.findIndex(d => d.id === o.day.id)) + 1;
+        return `<button class="day ${o.date < today ? "past" : ""}" style="--st:${st.c};--col:${col}" data-date="${o.date}" data-day="${o.day.id}">
           <div class="d1">${esc(o.day.venue)} ${WD[o.day.weekday]} – nr ${o.nr}</div>
-          <div class="d2">${WDL[o.dt.getUTCDay()]} ${o.dt.getUTCDate()} ${MON[o.dt.getUTCMonth()]}${o.day.time ? ", " + o.day.time : ""} · ${esc(st.t)}</div></button>`; }).join("") +
+          <div class="d2">${WDL[o.dt.getUTCDay()]} ${o.dt.getUTCDate()} ${MON[o.dt.getUTCMonth()]}${o.day.time ? ", " + o.day.time : ""}</div>
+          <div class="d3">${esc(st.t)}</div></button>`; }).join("") +
       `</div></div>`;
   }
   if(!occ.length) html += `<div class="empty">Inga träningar i perioden. Kontrollera datumen och träningsdagarna under <b>Ändra säsongen</b>.</div>`;
