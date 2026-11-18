@@ -18,7 +18,10 @@ Det gemensamma för sviten (jämförelse av apparna, förslaget om gemensam prof
 | Fil | Innehåll |
 |---|---|
 | `practiceplanner.html` | Hela appen (~170 kB). Typsnitten är base64-inbäddade i `@font-face`. |
-| `index.html` | Bara en omdirigering till `practiceplanner.html`, så att `…/practiceplanner/` fungerar. Ingen app-kod. Det enda undantaget från regeln om en enda HTML-fil. |
+| `index.html` | Liten omdirigering till `practiceplanner.html`, så att rotadressen öppnar appen i stället för att ge 404. Ingen app-kod, ingen version att höja. |
+| `docs/manual.html` | Manualen (källan), med skärmbilderna inbäddade. Ändras ett arbetsflöde eller en knappetikett ska manualen följa med. |
+| `docs/make_manual_pdf.cjs` | Bygger `docs/practiceplanner-manual.pdf` ur manualen (`node docs/make_manual_pdf.cjs`). Webbsidan och PDF:en kopieras till `trenchrox/handbollssviten` (`manualer/`). |
+| `.nojekyll` | Tom fil som stänger av Jekyll på Pages. |
 | `suite-schema.md` | Sviteövergripande ID- och dataformat, version 1. Kopia, ska hållas lika i alla repon. |
 | `CLAUDE.md` | Den här filen. |
 
@@ -103,7 +106,7 @@ Inget av detta är byggt. Läs inte och skriv inte `svit_session` förrän det �
 ## Servering
 
 - Appen serveras från GitHub Pages ur det här repot (`trenchrox/practiceplanner`).
-- Den exakta adressen är inte bekräftad. Fyll i den här när den är känd: `[adress]`.
+- Adress: `https://trenchrox.github.io/practiceplanner/practiceplanner.html` (bekräftad av användaren). Rotadressen `https://trenchrox.github.io/practiceplanner/` skickar vidare dit via `index.html`.
 - Lägg inte till en `sw.js` med brett scope som kan ersätta en annan apps service worker på samma domän. Använd cachenamnet `handboll-planner-v` + `APP_VERSION` och radera bara cacher med det prefixet.
 
 ## Att göra
