@@ -95,8 +95,8 @@ Nya fält läggs till som valfria med standardvärde (som `S.theme`) i stället 
 
 ## Versionering
 
-- Versionen står i en enda konstant: `const APP_VERSION = '1.5'` överst i scriptet. Den visas i sidomenyn (`#appVersion`). Ändra den inte på något annat ställe.
-- **Andra siffran höjs** vid nya funktioner och fixar (1.5 → 1.6).
+- Versionen står i en enda konstant: `const APP_VERSION = '1.6'` överst i scriptet. Den visas i sidomenyn (`#appVersion`). Ändra den inte på något annat ställe.
+- **Andra siffran höjs** vid nya funktioner och fixar (1.6 → 1.7).
 - **Första siffran höjs** när lagringsformatet ändras (till exempel byte från `localStorage` till IndexedDB). Då krävs alltid en migrering av befintlig data.
 - **Höj alltid versionen vid varje ändring av `practiceplanner.html`.** När en service worker finns styr versionen dess cache.
 - Appens version och `schema`-versionen i exportfilen är två olika saker.
