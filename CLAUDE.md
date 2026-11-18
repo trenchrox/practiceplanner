@@ -17,7 +17,7 @@ Det gemensamma för sviten (jämförelse av apparna, förslaget om gemensam prof
 
 | Fil | Innehåll |
 |---|---|
-| `practiceplanner.html` | Hela appen (~460 kB, varav ca 280 kB bilder). Typsnitten är base64-inbäddade i `@font-face`. |
+| `practiceplanner.html` | Hela appen (~470 kB, varav ca 280 kB bilder). Typsnitten är base64-inbäddade i `@font-face`. |
 | `index.html` | Liten omdirigering till `practiceplanner.html`, så att rotadressen öppnar appen i stället för att ge 404. Ingen app-kod, ingen version att höja. |
 | `docs/manual.html` | Manualen (källan), med skärmbilderna inbäddade. Ändras ett arbetsflöde eller en knappetikett ska manualen följa med. |
 | `docs/make_manual_pdf.cjs` | Bygger `docs/practiceplanner-manual.pdf` ur manualen (`node docs/make_manual_pdf.cjs`). Webbsidan och PDF:en kopieras till `trenchrox/handbollssviten` (`manualer/`). |
@@ -79,7 +79,11 @@ session = { id: ses_…, name, date, venue, lengthMin, levelSplit, doubleCourt,
             blocks: [{ id: blk_…, exerciseId, trackId: trk_…|'all', startMin, durMin }] }
 ```
 
-Målvaktsspåret är ett vanligt spår med `kind: 'gk'` (valfritt fält, saknas på äldre pass). `targetTrack(s, e)` väljer spår för plusknappen: målvaktsövningar (`isGk(e)`: grupp RE, PO, ST, UK, SF, eller egen övning med `gk: true`) till målvaktsspåret om det finns, annars första spåret. Blocken med `trackId: 'all'` gäller även målvaktsspåret. Säsongens träningsdagar har valfria `gkTrack: true`, som ger nya pass ett målvaktsspår (påverkar inte pass som redan finns). Fälten `kind` och `gk` är tillägg till `suite-schema.md` v1 och ska föras in där när de andra apparna ska läsa dem.
+Målvaktsspåret är ett vanligt spår med `kind: 'gk'` (valfritt fält, saknas på äldre pass). `targetTrack(s, e)` väljer spår för plusknappen: målvaktsövningar (`isGk(e)`: grupp RE, PO, ST, UK, SF, eller egen övning med `gk: true`) till målvaktsspåret om det finns, annars första spåret. Blocken med `trackId: 'all'` gäller även målvaktsspåret. Säsongens träningsdagar har valfria `gkTrack: true`, som ger nya pass ett målvaktsspår (påverkar inte pass som redan finns). Fälten `kind` och `gk`, id-prefixet `dgm_`, planbilderna (`handbollssviten/diagram@1`) och `extraDiagrams` är tillägg till `suite-schema.md` v1 och ska föras in där när de andra apparna ska läsa dem.
+
+**Planbilder** ritas i Playbook och sparas som data. `exDiagrams(e)` läser dem och `diagramList(e)` skriver: egna övningar har `e.diagrams`, inbyggda övningar har `S.extraDiagrams[exerciseId]` (valfritt fält, saknas hos äldre användare). Båda är listor av `{id: dgm_…, caption, diagram}` där `diagram` har formen `handbollssviten/diagram@1`: `{schema, court:'half', defense, tokens[], paths[]}` (meter på halvplanen, se Playbooks `CLAUDE.md`). Egna övningars bilder följer med i exporten (`exercises`), `S.extraDiagrams` följer med som `extraDiagrams` i exportfilen. `diagramSVG()` ritar bilden (en kopia av Playbooks plan och symboler, med pilspetsar och stegnummer när det finns flera steg) och `cleanDiagram()` rensar all data som kommer in (både från Playbook och vid import): okända fält bort, längder och antal begränsade.
+
+Ritverktyget är Playbook i en iframe: knappen **+ Planbild** i förklaringen anropar `openDiagramEditor()`, som öppnar `#dlgDg` med `../playbook-handboll/playbook.html?embed=1` (samma adress, annan sökväg) och pratar med den via `postMessage`. Protokollet och reglerna står i Playbooks `CLAUDE.md` ("Inbäddat läge"). Planeraren släpper bara igenom meddelanden från samma adress och från den egna iframen. Det fungerar inte från en lokal fil (`file://`) och kräver uppkoppling första gången (ritverktyget ligger i Playbook, inte här). Ändra inte meddelandena utan att ändra Playbook i samma veva. De inbyggda bilderna i `IMG` kan inte redigeras.
 
 Bilderna i förklaringarna ligger i konstanten `IMG` (övnings-id → lista med `{a, w, h, d}`, `d` är en data-URL i WebP, högst 520 px). De kommer ur kompendierna i `trenchrox/handbollssviten` och är kopplade till övningar utifrån bildtext och sammanhang. Nu finns 27 bilder på 18 övningar. Raden är mycket lång, så skriv inte ut den. Fler bilder läggs till med samma format (förminska till högst 520 px, WebP). `IMG` följer inte med i export.
 
@@ -91,8 +95,8 @@ Nya fält läggs till som valfria med standardvärde (som `S.theme`) i stället 
 
 ## Versionering
 
-- Versionen står i en enda konstant: `const APP_VERSION = '1.4'` överst i scriptet. Den visas i sidomenyn (`#appVersion`). Ändra den inte på något annat ställe.
-- **Andra siffran höjs** vid nya funktioner och fixar (1.4 → 1.5).
+- Versionen står i en enda konstant: `const APP_VERSION = '1.5'` överst i scriptet. Den visas i sidomenyn (`#appVersion`). Ändra den inte på något annat ställe.
+- **Andra siffran höjs** vid nya funktioner och fixar (1.5 → 1.6).
 - **Första siffran höjs** när lagringsformatet ändras (till exempel byte från `localStorage` till IndexedDB). Då krävs alltid en migrering av befintlig data.
 - **Höj alltid versionen vid varje ändring av `practiceplanner.html`.** När en service worker finns styr versionen dess cache.
 - Appens version och `schema`-versionen i exportfilen är två olika saker.
@@ -119,7 +123,7 @@ Inget av detta är byggt. Läs inte och skriv inte `svit_session` förrän det �
 - `manifest.json`, `sw.js` och ikoner (appen är inte installerbar än).
 - Beslut om lagring: nuvarande `localStorage` räcker för små datamängder men tål mindre än IndexedDB. Byte kräver migrering och version 2.0.
 - Gemensam profil (se ovan).
-- Testa på en riktig iPad: stående och liggande, touch, tillägg via `+`, utskrift.
+- Testa på en riktig iPad: stående och liggande, touch, tillägg via `+`, utskrift, och särskilt **+ Planbild** (Playbook i en iframe, ritning med fingret, både i Safari och som installerad app).
 - Drag och släpp med touch är obeprövat på iPad.
 
 ## Arbetssätt
