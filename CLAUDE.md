@@ -17,7 +17,7 @@ Det gemensamma för sviten (jämförelse av apparna, förslaget om gemensam prof
 
 | Fil | Innehåll |
 |---|---|
-| `practiceplanner.html` | Hela appen (~170 kB). Typsnitten är base64-inbäddade i `@font-face`. |
+| `practiceplanner.html` | Hela appen (~460 kB, varav ca 280 kB bilder). Typsnitten är base64-inbäddade i `@font-face`. |
 | `index.html` | Liten omdirigering till `practiceplanner.html`, så att rotadressen öppnar appen i stället för att ge 404. Ingen app-kod, ingen version att höja. |
 | `docs/manual.html` | Manualen (källan), med skärmbilderna inbäddade. Ändras ett arbetsflöde eller en knappetikett ska manualen följa med. |
 | `docs/make_manual_pdf.cjs` | Bygger `docs/practiceplanner-manual.pdf` ur manualen (`node docs/make_manual_pdf.cjs`). Webbsidan och PDF:en kopieras till `trenchrox/handbollssviten` (`manualer/`). |
@@ -74,9 +74,14 @@ S = { own: [exercise],        // egna övningar (inbyggda ligger i BUILTIN i kod
 
 session = { id: ses_…, name, date, venue, lengthMin, levelSplit, doubleCourt,
             dayId?,             // koppling till träningsdag i säsongen
-            tracks: [{ id: trk_…, name, court: 'A'|'B', groupId: grp_…|null }],
+            tracks: [{ id: trk_…, name, court: 'A'|'B'|'G', groupId: grp_…|null,
+                       kind?: 'gk' }],   // kind 'gk' = målvaktsspår, max ett per pass, alltid sist
             blocks: [{ id: blk_…, exerciseId, trackId: trk_…|'all', startMin, durMin }] }
 ```
+
+Målvaktsspåret är ett vanligt spår med `kind: 'gk'` (valfritt fält, saknas på äldre pass). `targetTrack(s, e)` väljer spår för plusknappen: målvaktsövningar (`isGk(e)`: grupp RE, PO, ST, UK, SF, eller egen övning med `gk: true`) till målvaktsspåret om det finns, annars första spåret. Blocken med `trackId: 'all'` gäller även målvaktsspåret. Säsongens träningsdagar har valfria `gkTrack: true`, som ger nya pass ett målvaktsspår (påverkar inte pass som redan finns). Fälten `kind` och `gk` är tillägg till `suite-schema.md` v1 och ska föras in där när de andra apparna ska läsa dem.
+
+Bilderna i förklaringarna ligger i konstanten `IMG` (övnings-id → lista med `{a, w, h, d}`, `d` är en data-URL i WebP, högst 520 px). De kommer ur kompendierna i `trenchrox/handbollssviten` och är kopplade till övningar utifrån bildtext och sammanhang. Nu finns 27 bilder på 18 övningar. Raden är mycket lång, så skriv inte ut den. Fler bilder läggs till med samma format (förminska till högst 520 px, WebP). `IMG` följer inte med i export.
 
 Säsongsobjektet (`seasons[]`: namn, första och sista träning, träningsdagar, uppehåll) är härlett ur `renderSetup` och `occurrences`. Läs koden innan du förlitar dig på fälten.
 
@@ -86,8 +91,8 @@ Nya fält läggs till som valfria med standardvärde (som `S.theme`) i stället 
 
 ## Versionering
 
-- Versionen står i en enda konstant: `const APP_VERSION = '1.0'` överst i scriptet. Den visas i sidomenyn (`#appVersion`). Ändra den inte på något annat ställe.
-- **Andra siffran höjs** vid nya funktioner och fixar (1.0 → 1.1).
+- Versionen står i en enda konstant: `const APP_VERSION = '1.4'` överst i scriptet. Den visas i sidomenyn (`#appVersion`). Ändra den inte på något annat ställe.
+- **Andra siffran höjs** vid nya funktioner och fixar (1.4 → 1.5).
 - **Första siffran höjs** när lagringsformatet ändras (till exempel byte från `localStorage` till IndexedDB). Då krävs alltid en migrering av befintlig data.
 - **Höj alltid versionen vid varje ändring av `practiceplanner.html`.** När en service worker finns styr versionen dess cache.
 - Appens version och `schema`-versionen i exportfilen är två olika saker.
